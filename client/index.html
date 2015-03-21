@@ -6,9 +6,9 @@
     <link href="css/semantic.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
-    <div class="ui page grid">
+    <div class="ui vertically padded page grid">
+
       <div class="row">
-        <div class="ui divider"></div>
         <div class="ui grid">
           <div class="row">
             <div class="column">
@@ -21,6 +21,7 @@
           </div>
         </div>
       </div>
+
       <div class="row">
         <div
             class="fb-like"
@@ -28,14 +29,137 @@
             data-width="450"
             data-show-faces="true">
         </div>
-      </div>
-      <div id="fb-root"></div>
-
-      <div id="status">
+        <div id="status"></div>
       </div>
 
 
     </div>
+
+
+    <div class="ui vertically padded page grid">
+      <div class="column">
+        <div class="ui top attached tabular menu">
+          <a class="active item" data-tab="first">Rank</a>
+          <a class="item" data-tab="second">My History</a>
+          <a class="item" data-tab="third">Check In</a>
+        </div>
+        <div class="ui bottom attached active tab segment" data-tab="first">
+          <table class="ui celled table">
+            <thead>
+              <tr>
+                <th>Rank</th>
+                <th>Buddy 1</th>
+                <th>Buddy 2</th>
+                <th># Tasks</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Eddie</td>
+                <td>Someone</td>
+                <td>35</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Heron Yang</td>
+                <td>Someone B</td>
+                <td>28</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Heron Yang</td>
+                <td>Someone B</td>
+                <td>28</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Heron Yang</td>
+                <td>Someone B</td>
+                <td>28</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Heron Yang</td>
+                <td>Someone B</td>
+                <td>28</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ui bottom attached tab segment" data-tab="second">
+          <table class="ui celled table">
+            <thead>
+              <tr>
+                <th>Task Name</th>
+                <th>#</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Buddy Date</td>
+                <td class="positive">3</td>
+              </tr>
+              <tr>
+                <td>Go Booth</td>
+                <td class="positive">1</td>
+              </tr>
+              <tr>
+                <td>Attend Meeting</td>
+                <td class="negative">0</td>
+              </tr>
+              <tr>
+                <td>Total</td>
+                <td class="active">4</td>
+              </tr>
+            </tbody>
+          </table>
+          <h2 class="ui huge header">Details</h2>
+          <table class="ui celled table">
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Task Name</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Buddy Date</td>
+                <td>2015-03-12 12:32PM</td>
+                <td class="positive">Checked</td>
+              </tr>
+              <tr>
+                <td>Buddy Date</td>
+                <td>2015-03-12 12:32PM</td>
+                <td class="positive">Checked</td>
+              </tr>
+              <tr>
+                <td>Go Booth</td>
+                <td>2015-03-12 12:32PM</td>
+                <td class="negative">Wait for Buddy</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="ui bottom attached tab segment" data-tab="third">
+          <div class="ui fluid search selection dropdown">
+            <input type="hidden" name="task">
+            <i class="dropdown icon"></i>
+            <div class="default text">Select Task</div>
+            <div class="menu">
+              <div class="item" data-value="ad">Buddy Date</div>
+              <div class="item" data-value="ae">Go Booth</div>
+              <div class="item" data-value="ae">Attend Meeting</div>
+            </div>
+          </div>
+          <div class="ui divider"></div>
+          <div class="fluid positive ui button">Check-in!</div>
+        </div>
+      </div>
+    </div>
+    <div id="fb-root"></div>
+
 
     <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
     <script src="js/semantic.js" type="text/javascript"></script>
@@ -85,6 +209,7 @@
         if (response.status === 'connected') {
           // Logged into your app and Facebook.
           testAPI();
+          // TODO: requestion /api/loing with fb.(/me) and FB.getAuthResponse()['accessToken']]
         } else if (response.status === 'not_authorized') {
           // The person is logged into Facebook, but not your app.
           document.getElementById('status').innerHTML = 'Please log ' +
@@ -116,6 +241,15 @@
             'Thanks for logging in, ' + response.name + '!';
         });
       }
+    </script>
+
+    <script>
+      $('.menu .item')
+      .tab()
+      ;
+      $('.ui.dropdown')
+      .dropdown()
+      ;
     </script>
 
   </body>
