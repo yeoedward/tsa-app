@@ -1,0 +1,12 @@
+{
+  "cookieSecret" : "wmCookieSecret",
+  "appID" : "301070593392177",
+  "appSecret" : "4acab46f50af8a87756f15c5134b5c4f",
+  "dbConnect": "pg://eddy:@localhost/wingman",
+  "redis": {
+    "host": "localhost",
+    "port": 6379,
+    "db": 0,
+    "pass": "password"
+  }
+}

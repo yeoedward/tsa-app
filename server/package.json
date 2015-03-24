@@ -1,0 +1,12 @@
+{
+  "name": "tsa-app",
+  "version": "1.0.0",
+  "description": "TSA App",
+  "repository": "https://github.com/yeoedward/tsa-app.git",
+  "dependencies": {
+    "body-parser": "^1.12.2",
+    "express": "^4.12.3",
+    "pg": "^4.3.0",
+    "request": "^2.53.0"
+  }
+}
