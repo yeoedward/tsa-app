@@ -47,11 +47,12 @@ Auth.prototype.addUser = function(userid, callback) {
     });
   });
   */
+  callback(null);
 };
 
 Auth.prototype.login = function (req, res) {
-  var user = req.body.id;
-  var token = req.body.token;
+  var userID = req.body.userID;
+  var token = req.body.accessToken;
 
   var reqString = 'https://graph.facebook.com/'
     + 'debug_token?'
@@ -63,19 +64,21 @@ Auth.prototype.login = function (req, res) {
     if (!err && body.data !== undefined) {
       var data = body.data;
 
-      if(data.is_valid && data.user_id === user
+      if(data.is_valid && data.user_id === userID
           && data.app_id === _this.appID) {
         //successfully validated
 
-        _this.addUser(user, function(err) {
+        _this.addUser(userID, function(err) {
           if (err) {
             res.send(500);
             console.error(err);
             return;
           }
 
-          req.session.user_id = user;
-          req.session.token = token;
+          /*
+          req.session.userID = userID;
+          req.session.accessToken = token;
+          */
           var resObj = {
             success: true
           };
@@ -91,6 +94,7 @@ Auth.prototype.login = function (req, res) {
         success: false,
         errno: 1
       };
+      console.log("Invalid credentials");
       res.json(resObj);
       return;
     }
