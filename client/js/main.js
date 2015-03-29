@@ -66,6 +66,8 @@ function checkLoginState() {
   });
 }
 
+
+// Call back function for FB login
 function connectedCallback() {
   var accessToken = FB.getAuthResponse()['accessToken'];
   FB.api('/me', function(response) {
@@ -80,6 +82,7 @@ function connectedCallback() {
   });
 }
 
+// tsa-api api login
 function apiLogin(accessToken, userID) {
   $.ajax({
       method: "POST",
@@ -96,8 +99,21 @@ function apiLogin(accessToken, userID) {
   });
 }
 
+// Update UI after successful login
 function loggedInSucceed() {
   var time_interval = 500;
   $('#tsa-welcome').fadeOut(time_interval);
   $('#tsa-content').delay(time_interval).fadeIn();
+}
+
+// Event handler for login button
+function fbLogin() {
+
+  FB.login(function(response) {
+    if (response.authResponse) {
+      location.reload();
+    } else {
+      alarm("WHY? Just Login!");
+    }
+  });
 }
