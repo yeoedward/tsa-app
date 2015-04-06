@@ -8,6 +8,7 @@
     "express": "^4.12.3",
     "q": "~1.2.0",
     "request-promise": "~0.4.1",
-    "pg-promise": "~0.7.1"
+    "pg-promise": "~0.7.1",
+    "path": "~0.11.14"
   }
 }

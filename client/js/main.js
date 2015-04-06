@@ -1,5 +1,5 @@
 /* FIXME: make sure this matches to the correct server location */
-var API_URL = "http://localhost:8001/api";
+var API_URL = "http://localhost:8000/api";
 
 /*
  * ==============================================
