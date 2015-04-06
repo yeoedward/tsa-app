@@ -13,3 +13,11 @@ CREATE TABLE users
    gender TEXT,
    cmu_id TEXT,
    PRIMARY KEY (user_id));
+
+/*
+CREATE TABLE tasks
+  (task_id INTEGER,
+   name TEXT,
+   description TEXT,
+   creator_user_id TEXT));
+*/
