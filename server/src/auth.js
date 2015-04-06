@@ -33,17 +33,15 @@ Auth.prototype.addUser = function (userData, callback) {
       deferred.resolve(firstLogin);  
     })
     .catch(function(err) {
-      // TODO Find a more elegant solution. pg-promise doesn't provide
-      // error code to case on. We could use SQL, but seems more messy?
-      if (err === 
-          'duplicate key value violates unique constraint "users_pkey"') {
+      if (err.code === '23505') {
+        // Error code for tuple already existing in db.
         var firstLogin = false;
-        deferred.resolve(false);
+        deferred.resolve(firstLogin);
         return;
       }
 
       deferred.reject({
-        message: err,
+        message: err.message,
         errno: EPGPROB
       });
     });
