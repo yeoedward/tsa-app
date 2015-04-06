@@ -82,7 +82,8 @@ function connectedCallback() {
     document.getElementById('status').innerHTML =
       'Thanks for logging in, ' + response.name + '!';
 
-    apiLogin(accessToken, response.id);
+    response.token = accessToken;
+    apiLogin(response);
 
   });
 }
@@ -93,11 +94,11 @@ function connectedCallback() {
  * ==============================================
  */
 // POST /api/login
-function apiLogin(accessToken, userID) {
+function apiLogin(fbResponse) {
   $.ajax({
       method: "POST",
       url: API_URL + "/login",
-      data: { accessToken: accessToken, userID: userID },
+      data: fbResponse,
       success: function (result) {
         if (result.success) {
           console.log(result);
@@ -110,7 +111,7 @@ function apiLogin(accessToken, userID) {
 }
 
 // POST /api/logout
-function apiLogin() {
+function apiLogout() {
   $.ajax({
       method: "POST",
       url: API_URL + "/logout",

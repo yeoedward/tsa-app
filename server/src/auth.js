@@ -2,108 +2,103 @@ exports = module.exports = function(appId, appSecret, dbConnect) {
   return new Auth(appId, appSecret, dbConnect);
 };
 
-// Imports
-var pg = require('pg');
-var request = require('request');
+var Q = require('q');
+var pg = require('pg-promise')({
+    promiseLib: Q
+});
+var request = require('request-promise');
+
+const EFBCONN = 1;
+const EINVALID = 2;
+const EPGPROB = 3;
 
 function Auth(appID, appSecret, dbConnect) {
   this.appID = appID;
   this.appSecret = appSecret;
   this.appToken = appID + '|' + appSecret;
-  this.dbConnect = dbConnect;
+  this.db = pg(dbConnect);
 }
 
-Auth.prototype.addUser = function(userid, callback) {
-/*
-  pg.connect(this.dbConnect, function(err, client, done) {
-    var queryCfg = {
-      text: 'INSERT INTO wingmen VALUES ($1)',
-      values: [userid]
-    };
-
-    if (err) {
-      done();
-      callback(err);
-      console.error(err);
-      return;
-    }
-
-    client.query(queryCfg, function(err, result) {
-      done();
-      if (!err) {
-        callback(null);
-      } else {
-        switch(err.code) {
-        case '23505':
-          // user logged in before
-          callback(null);
-          break;
-        default:
-          callback(err);
-          break;
-        }
+Auth.prototype.addUser = function (userData, callback) {
+  var deferred = Q.defer(); 
+  this.db.none('INSERT INTO users (user_id, token, first_name, last_name, '
+              + 'gender) VALUES ($1, $2, $3, $4, $5)',
+              [userData.id,
+              userData.token,
+              userData.first_name,
+              userData.last_name,
+              userData.gender])
+    .then(function() {    
+      var firstLogin = true;
+      deferred.resolve(firstLogin);  
+    })
+    .catch(function(err) {
+      // TODO Find a more elegant solution. pg-promise doesn't provide
+      // error code to case on. We could use SQL, but seems more messy?
+      if (err === 
+          'duplicate key value violates unique constraint "users_pkey"') {
+        var firstLogin = false;
+        deferred.resolve(false);
+        return;
       }
 
+      deferred.reject({
+        message: err,
+        errno: EPGPROB
+      });
     });
-  });
-  */
-  callback(null);
+  return deferred.promise.nodeify(callback);
 };
 
 Auth.prototype.login = function (req, res) {
-  var userID = req.body.userID;
-  var token = req.body.accessToken;
+  var userID = req.body.id;
+  var token = req.body.token;
 
+  //TODO Need to sanitize?
   var reqString = 'https://graph.facebook.com/'
     + 'debug_token?'
     + 'input_token=' + token + '&'
     + 'access_token=' + this.appToken;
 
   var _this = this;
-  request({url: reqString, json: true}, function(err, fbRes, body){
-    if (!err && body.data !== undefined) {
-      var data = body.data;
+  request({url: reqString, json: true})
+    .then(function(body) {
+      if(body.data.is_valid
+          && body.data.user_id === userID
+          && body.data.app_id === _this.appID) {
+        // Successfully validated
+        return _this.addUser(req.body);
+      }
 
-      if(data.is_valid && data.user_id === userID
-          && data.app_id === _this.appID) {
-        //successfully validated
-
-        _this.addUser(userID, function(err) {
-          if (err) {
-            res.send(500);
-            console.error(err);
-            return;
-          }
-
-          /*
-          req.session.userID = userID;
-          req.session.accessToken = token;
-          */
-          var resObj = {
-            success: true
-          };
-          res.json(resObj);
-          return;
-        });
-
+      var err = new Error("Invalid credentials");
+      err.errno = EINVALID;
+      throw err;
+    })
+    .then(function(firstLogin) {
+      /*
+      req.session.userID = userID;
+      req.session.accessToken = token;
+      */
+      res.json({
+        firstLogin: firstLogin,
+        success: true
+      });
+    })
+    .catch(function(err) {
+      if (err.errno === EPGPROB) {
+        console.error("Postgres error: ", err);
+        res.sendStatus(500);
         return;
       }
 
-      //invalid credentials
-      var resObj = {
-        success: false,
-        errno: 1
-      };
-      console.log("Invalid credentials");
-      res.json(resObj);
-      return;
-    }
+      if (err.errno === undefined) {
+        // Request library doesn't set errno.
+        err.errno = EFBCONN;
+      }
 
-    //unable to authenticate with facebook
-    var resObj = {
-      success: false,
-      errno: 2
-    };
-    res.json(resObj);
-  });
+      res.json({
+        success: false,
+        err: err.errno
+      });
+    });
 };

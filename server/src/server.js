@@ -10,7 +10,7 @@ var http = require ('http');
 var auth = require('./auth')(config.appID, config.appSecret, config.dbConnect);
 
 var app = express();
-app.use (bodyParser());
+app.use(bodyParser());
 
 // FIXME: this is for allowing our testing client (localhost:8001) to access server
 // with out having cross-site error. Make sure it configs correctly when deployed.

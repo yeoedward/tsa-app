@@ -2,5 +2,5 @@
   "apiPort" : 8001,
   "appID" : "841727872531922",
   "appSecret" : "8d56e7477c30d20b3005d6df7460d4df",
-  "dbConnect": "pg://eddy:@localhost/wingman"
+  "dbConnect": "pg://eddy:@localhost/tsa"
 }
