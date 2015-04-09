@@ -21,7 +21,7 @@ function Auth(appID, appSecret, dbConnect) {
 
 Auth.prototype.addUser = function (userData, callback) {
   var deferred = Q.defer(); 
-  this.db.none('INSERT INTO users (user_id, token, first_name, last_name, '
+  this.db.none('INSERT INTO users (fb_user_id, token, first_name, last_name, '
               + 'gender) VALUES ($1, $2, $3, $4, $5)',
               [userData.id,
               userData.token,

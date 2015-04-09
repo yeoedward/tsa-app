@@ -1,12 +1,15 @@
 /* IMPORTANT: Don't run this if there is non-discardable data in the db! */
 DROP DATABASE IF EXISTS tsa;
 CREATE DATABASE tsa;
+
 /* Connect to database. */
 \c tsa
 
-/* Schema */
+/* Schemas */
+
 CREATE TABLE users
-  (user_id TEXT,
+  (user_id SERIAL,
+   fb_user_id TEXT UNIQUE,
    token TEXT,
    first_name TEXT,
    last_name TEXT,
@@ -14,10 +17,26 @@ CREATE TABLE users
    cmu_id TEXT,
    PRIMARY KEY (user_id));
 
-/*
+CREATE TABLE buddies
+  (big_user_id INTEGER,
+   little_user_id INTEGER,
+   PRIMARY KEY (big_user_id, little_user_id),
+   FOREIGN KEY (big_user_id) REFERENCES users(user_id),
+   FOREIGN KEY (little_user_id) REFERENCES users(user_id));
+
 CREATE TABLE tasks
-  (task_id INTEGER,
+  (task_id SERIAL,
    name TEXT,
    description TEXT,
-   creator_user_id TEXT));
-*/
+   creator_user_id TEXT,
+   buddy_required BOOLEAN,
+   PRIMARY KEY (task_id));
+
+CREATE TABLE completed
+  (completion_id SERIAL,
+   user_id INTEGER,
+   task_id INTEGER,
+   time TIMESTAMP WITH TIME ZONE,
+   PRIMARY KEY (completion_id),
+   FOREIGN KEY (user_id) REFERENCES users(user_id),
+   FOREIGN KEY (task_id) REFERENCES tasks(task_id));
