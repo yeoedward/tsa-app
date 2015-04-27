@@ -91,6 +91,7 @@ Auth.prototype.login = function (req, res) {
 
       if (err.errno === undefined) {
         // Request library doesn't set errno.
+        // TODO assert that it is indeed an error from the request library.
         err.errno = EFBCONN;
       }
 
